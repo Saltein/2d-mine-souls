@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://c6cbmwbwy57dh"]
+
+[ext_resource type="Texture2D" uid="uid://s54leukguq8b" path="res://assets/tiles/rock.png" id="1_5pvxx"]
+[ext_resource type="Texture2D" uid="uid://noo6wgcxwnc8" path="res://assets/tiles/rock_wall.png" id="2_lgc71"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dqxiu"]
+
+[node name="Tile" type="Node2D" unique_id=1645533399]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1984436576]
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=422601270]
+position = Vector2(0, -64)
+scale = Vector2(1, 0.75)
+texture = ExtResource("1_5pvxx")
+
+[node name="Wall" type="Sprite2D" parent="StaticBody2D" unique_id=1645886525]
+y_sort_enabled = true
+position = Vector2(0, -8)
+texture = ExtResource("2_lgc71")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1393991951]
+scale = Vector2(3.2, 2.4)
+shape = SubResource("RectangleShape2D_dqxiu")

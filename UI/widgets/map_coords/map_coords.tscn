@@ -15,11 +15,11 @@ script = ExtResource("1_pw0nr")
 layout_mode = 0
 offset_left = -296.0
 offset_right = -17.0
-offset_bottom = 73.0
+offset_bottom = 104.0
 text = "map_coords"
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=839123679]
 z_index = -1
-position = Vector2(-152, 40)
-scale = Vector2(4.746, 1.25)
+position = Vector2(-152, 51.999996)
+scale = Vector2(4.746, 1.6249999)
 texture = ExtResource("2_s5msr")

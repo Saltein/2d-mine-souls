@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://by2h2bsg7kcnh"]
 
-[ext_resource type="Texture2D" uid="uid://d4ic7rfiyp2aj" path="res://icon.svg" id="1_sy0wt"]
+[ext_resource type="Texture2D" uid="uid://yeb0d114muuj" path="res://assets/tiles/water.png" id="1_mo28j"]
 
 [node name="Tile" type="Node2D" unique_id=1645533399]
 
@@ -8,4 +8,4 @@
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=422601270]
 scale = Vector2(1, 0.75)
-texture = ExtResource("1_sy0wt")
+texture = ExtResource("1_mo28j")

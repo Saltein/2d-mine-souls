@@ -3,32 +3,38 @@ extends Node2D
 var noise_height = FastNoiseLite.new()
 var noise_biome = FastNoiseLite.new()
 var noise_distortion = FastNoiseLite.new()  # Для искажения границ
-var array_size = 100
-var heightmap = []
-var biomemap = []
+var noise_rng = RandomNumberGenerator.new()
+var array_size = 500
+var height_map = []
+var biome_map = []
+var chance_map = []
+
+var seed: int = 1442561
 
 # Параметры для настройки размера клеток
 @export var biome_cell_size: float = 15.0  # Базовый размер клетки (15.0)
-@export var biome_distortion_strength: float = 7.0  # Сила искажения границ (7.0)
+@export var biome_distortion_strength: float = 7.0  # Сила искажения границ (7.0)(
 @export var biome_smooth_passes: int = 3  # Количество проходов сглаживания (3)
 
 func _ready():
 	# Настройка для карты высот
-	noise_height.seed = randi()
+	noise_height.seed = seed
 	noise_height.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	noise_height.fractal_octaves = 4 #(4)
 	noise_height.fractal_lacunarity = 2.0 #(2.0)
 	noise_height.fractal_gain = 0.7 #(0.7)
 	
+	noise_rng.seed = seed
+	
 	# Настройка для биомов (cellular/Voronoi)
-	noise_biome.seed = randi()
+	noise_biome.seed = seed
 	noise_biome.noise_type = FastNoiseLite.TYPE_CELLULAR
 	noise_biome.cellular_return_type = FastNoiseLite.RETURN_CELL_VALUE
 	noise_biome.cellular_distance_function = FastNoiseLite.DISTANCE_EUCLIDEAN
 	noise_biome.cellular_jitter = 0.3  # Уменьшаем для более регулярной сетки (0.3)
 	
 	# Настройка шума для искажения границ
-	noise_distortion.seed = randi()
+	noise_distortion.seed = seed
 	noise_distortion.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	noise_distortion.fractal_octaves = 3 #(3)
 	noise_distortion.fractal_lacunarity = 2.0 #(2.0)
@@ -36,8 +42,8 @@ func _ready():
 	
 	generate_biomes()
 	
-	#print("Height range: ", get_min_max(heightmap))
-	#print("Biome range: ", get_min_max(biomemap))
+	#print("Height range: ", get_min_max(height_map))
+	#print("Biome range: ", get_min_max(biome_map))
 	
 	analyze_biome_sizes()
 
@@ -45,14 +51,19 @@ func generate_biomes():
 	# Сначала генерируем сырые значения с искажением координат
 	var raw_biome = []
 	for x in range(array_size):
-		heightmap.append([])
+		height_map.append([])
+		chance_map.append([])
 		raw_biome.append([])
-		biomemap.append([])
+		biome_map.append([])
 		for y in range(array_size):
 			# Шум для высоты
 			var height_value = noise_height.get_noise_2d(x, y)
 			height_value = height_value * 0.5 + 0.5
-			heightmap[x].append(height_value)
+			height_map[x].append(height_value)
+			
+			# Шум chance
+			var chance_value = noise_rng.randf()
+			chance_map[x].append(chance_value)
 			
 			# Масштабируем координаты для увеличения размера клеток
 			var scaled_x = float(x) / biome_cell_size
@@ -97,7 +108,7 @@ func normalize_biomes(raw_biome):
 	# Применяем маппинг
 	for x in range(array_size):
 		for y in range(array_size):
-			biomemap[x].append(value_mapping[raw_biome[x][y]])
+			biome_map[x].append(value_mapping[raw_biome[x][y]])
 
 func smooth_biomes(passes: int):
 	for pass_num in range(passes):
@@ -105,7 +116,7 @@ func smooth_biomes(passes: int):
 		for x in range(array_size):
 			smoothed.append([])
 			for y in range(array_size):
-				smoothed[x].append(biomemap[x][y])
+				smoothed[x].append(biome_map[x][y])
 		
 		# Применяем сглаживание большинством голосов
 		for x in range(array_size):
@@ -117,12 +128,12 @@ func smooth_biomes(passes: int):
 					for dy in range(-1, 2):
 						var nx = posmod(x + dx, array_size)
 						var ny = posmod(y + dy, array_size)
-						var val = biomemap[nx][ny]
+						var val = biome_map[nx][ny]
 						votes[val] = votes.get(val, 0) + 1
 				
 				# Находим наиболее частое значение
 				var max_count = 0
-				var most_common = biomemap[x][y]
+				var most_common = biome_map[x][y]
 				for val in votes:
 					if votes[val] > max_count:
 						max_count = votes[val]
@@ -133,7 +144,7 @@ func smooth_biomes(passes: int):
 		# Обновляем карту биомов
 		for x in range(array_size):
 			for y in range(array_size):
-				biomemap[x][y] = smoothed[x][y]
+				biome_map[x][y] = smoothed[x][y]
 		
 		#print("Smoothing pass ", pass_num + 1, " completed")
 
@@ -151,7 +162,7 @@ func analyze_biome_sizes():
 	var biome_categories = {}
 	for x in range(array_size):
 		for y in range(array_size):
-			var category = biomemap[x][y]
+			var category = biome_map[x][y]
 			if not biome_categories.has(category):
 				biome_categories[category] = 0
 			biome_categories[category] += 1
@@ -167,9 +178,8 @@ func analyze_biome_sizes():
 	for y in range(min(30, array_size)):
 		var line = ""
 		for x in range(min(30, array_size)):
-			var biome_idx = int(biomemap[x][y] * 10)
+			var biome_idx = int(biome_map[x][y] * 10)
 			line += str(biome_idx) + " "
-		print(line)
 
 # Функция для динамического изменения параметров
 func update_biome_parameters(cell_size: float, distortion: float, smooth: int):
@@ -178,8 +188,8 @@ func update_biome_parameters(cell_size: float, distortion: float, smooth: int):
 	biome_smooth_passes = smooth
 	
 	# Очищаем старые данные
-	heightmap.clear()
-	biomemap.clear()
+	height_map.clear()
+	biome_map.clear()
 	
 	# Перегенерируем
 	generate_biomes()

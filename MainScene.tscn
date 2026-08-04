@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cpg08qcqvwp4k"]
 
-[ext_resource type="PackedScene" uid="uid://dt3grk1ic4utg" path="res://actors/Player/Player.tscn" id="1_epypp"]
+[ext_resource type="PackedScene" uid="uid://dt3grk1ic4utg" path="res://actors/Player/player.tscn" id="1_epypp"]
 [ext_resource type="Texture2D" uid="uid://d4ic7rfiyp2aj" path="res://icon.svg" id="1_wtcfe"]
 [ext_resource type="PackedScene" uid="uid://cq6jsqbu4hglh" path="res://UI/entities/Bars/Bar.tscn" id="3_epypp"]
 [ext_resource type="PackedScene" uid="uid://f6qikm3d5vsx" path="res://TerrainGeneration/terrain_renderer.tscn" id="4_0hol4"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://bisemnfrsgvxf" path="res://UI/widgets/map_coords/map_coords.tscn" id="4_hbc2u"]
 [ext_resource type="Script" uid="uid://dcnn0xtp56wan" path="res://actors/Player/PlayerCamera.gd" id="5_q6r6c"]
 [ext_resource type="PackedScene" uid="uid://by2h2bsg7kcnh" path="res://scenes/tiles/water.tscn" id="6_d21ai"]
+[ext_resource type="PackedScene" uid="uid://c6cbmwbwy57dh" path="res://scenes/tiles/solid.tscn" id="8_torvr"]
+[ext_resource type="PackedScene" uid="uid://dj3uh3dcm52yx" path="res://scenes/objects/plants/tree.tscn" id="9_8xkvn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
 size = Vector2(70, 569)
@@ -89,6 +91,8 @@ offset_bottom = 220.0
 Player = NodePath("../Player")
 camera = NodePath("../Camera2D")
 water_tile = ExtResource("6_d21ai")
+solid = ExtResource("8_torvr")
+tree = ExtResource("9_8xkvn")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=583233687 node_paths=PackedStringArray("Player")]
 zoom = Vector2(0.7, 0.7)

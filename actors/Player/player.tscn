@@ -16,9 +16,8 @@
 [ext_resource type="Script" uid="uid://cfib64eqej815" path="res://actors/Player/fsm/roll.gd" id="8_kbb24"]
 [ext_resource type="Script" uid="uid://drqan7djjxjqp" path="res://actors/Player/fsm/light_attack.gd" id="9_xcvco"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5fuia"]
-radius = 18.0
-height = 48.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_e0wb8"]
+radius = 20.0
 
 [sub_resource type="Animation" id="Animation_wouwq"]
 length = 0.001
@@ -598,8 +597,8 @@ text = "state"
 layout_mode = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1547225264]
-rotation = 1.5707964
-shape = SubResource("CapsuleShape2D_5fuia")
+scale = Vector2(0.8, 0.6)
+shape = SubResource("CircleShape2D_e0wb8")
 debug_color = Color(0.9299975, 0.21950799, 0.3862631, 0.41960785)
 
 [node name="Player" type="Node2D" parent="." unique_id=1979547000]

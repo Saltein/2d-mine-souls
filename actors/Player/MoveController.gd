@@ -20,7 +20,7 @@ extends CharacterBody2D
 @export var dodge_acceleration_phase: float = 0.2  # доля времени на разгон (0-1)
 @export var dodge_deceleration_phase: float = 0.7  # доля времени на замедление (0-1)
 
-@export var stamina_substract_coeff: float = 12
+@export var stamina_substract_coeff: float = 1 #12
 @export var stamina_recovery_coeff: float = 20
 @export var stamina_recovery_delay: float = 1
 

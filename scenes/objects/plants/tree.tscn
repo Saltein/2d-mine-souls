@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dj3uh3dcm52yx"]
+
+[ext_resource type="Texture2D" uid="uid://5u1p0frqfk8i" path="res://assets/trees/tree.png" id="1_e0wb8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p11i2"]
+radius = 5.0
+
+[node name="Tile" type="Node2D" unique_id=1645533399]
+z_index = 1
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1984436576]
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=422601270]
+position = Vector2(0, -93)
+texture = ExtResource("1_e0wb8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1393991951]
+scale = Vector2(0.8, 0.6)
+shape = SubResource("CircleShape2D_p11i2")

@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://3twd0mt38dh4" path="res://scenes/tiles/tile.tscn" id="2_tkvvo"]
 [ext_resource type="PackedScene" uid="uid://by2h2bsg7kcnh" path="res://scenes/tiles/water.tscn" id="3_tkvvo"]
 
-
 [node name="TerrainRenderer" type="Control" unique_id=457642214]
 layout_mode = 3
 anchors_preset = 0

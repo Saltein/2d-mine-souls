@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://3twd0mt38dh4"]
 
-[ext_resource type="Texture2D" uid="uid://d4ic7rfiyp2aj" path="res://icon.svg" id="1_2v8kq"]
+[ext_resource type="Texture2D" uid="uid://b5oqdq5hjeiag" path="res://assets/tiles/grass.png" id="1_i38sc"]
+[ext_resource type="Texture2D" uid="uid://dy4aonn87lade" path="res://assets/tiles/grass_wall.png" id="2_y6dap"]
 
 [node name="Tile" type="Node2D" unique_id=1645533399]
 
@@ -8,7 +9,8 @@
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=422601270]
 scale = Vector2(1, 0.75)
-texture = ExtResource("1_2v8kq")
+texture = ExtResource("1_i38sc")
 
 [node name="Wall" type="Sprite2D" parent="StaticBody2D" unique_id=1645886525]
 position = Vector2(0, 56)
+texture = ExtResource("2_y6dap")

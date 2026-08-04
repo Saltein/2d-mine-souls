@@ -5,6 +5,8 @@ extends Node
 @export var camera: Node2D
 @export var tile: PackedScene
 @export var water_tile: PackedScene
+@export var solid: PackedScene
+@export var tree: PackedScene
 @export var tile_size_x: int = 64
 @export var tile_size_y: int = 48
 
@@ -33,6 +35,9 @@ var tex_steppe = preload("res://assets/tiles/steppe.png")
 var tex_steppe_wall = preload("res://assets/tiles/steppe_wall.png")
 var tex_meadow = preload("res://assets/tiles/meadow.png")
 var tex_meadow_wall = preload("res://assets/tiles/meadow_wall.png")
+var tex_rock= preload("res://assets/tiles/rock.png")
+var tex_rock_wall = preload("res://assets/tiles/rock_wall.png")
+var tex_tree = preload("res://assets/trees/tree.png")
 
 var center_of_map_x = 0
 var center_of_map_y = 0
@@ -79,9 +84,9 @@ func is_valid_tile(tile_x: int, tile_y: int) -> bool:
 	# Проверяем, что координаты тайла находятся в пределах массивов Worldgen
 	if tile_x < 0 or tile_y < 0:
 		return false
-	if tile_x >= Worldgen.heightmap.size():
+	if tile_x >= Worldgen.height_map.size():
 		return false
-	if tile_y >= Worldgen.heightmap[0].size():
+	if tile_y >= Worldgen.height_map[0].size():
 		return false
 	return true
 
@@ -108,26 +113,40 @@ func gridRefresh() -> void:
 				var world_y = playerPosRoundedY + y * tile_size_y
 
 				var ground_node = tile.instantiate()
+				var solid_node = solid.instantiate()
+				var water_node = water_tile.instantiate()
+				var tree_node = tree.instantiate()
 				add_child(ground_node)
-
-				var water_node = null
-				var depth_value = Worldgen.heightmap[tile_coord.x][tile_coord.y]
-				var biome_value = Worldgen.biomemap[tile_coord.x][tile_coord.y]
-				if depth_value < 0.5:
+				add_child(solid_node)
+				add_child(water_node)
+				add_child(tree_node)
+				
+				var depth_value = Worldgen.height_map[tile_coord.x][tile_coord.y]
+				var biome_value = Worldgen.biome_map[tile_coord.x][tile_coord.y]
+				var chance_value = Worldgen.chance_map[tile_coord.x][tile_coord.y]
+				if depth_value < 0.4:
 					# Вода: дно + водная поверхность
 					ground_node.get_child(0).get_child(0).texture = tex_water_bottom
 					ground_node.global_position = Vector2(world_x, world_y + 64)
 					ground_node.z_index = -2
 
-					water_node = water_tile.instantiate()
-					add_child(water_node)
 					water_node.get_child(0).get_child(0).texture = tex_water
 					water_node.global_position = Vector2(world_x, world_y + 24)
-				else:
+				elif depth_value >= 0.4 and depth_value < 0.7:
 					# Суша: трава + стена
 					if biome_value < 0.25:
 						ground_node.get_child(0).get_child(0).texture = tex_grass
 						ground_node.get_child(0).get_child(1).texture = tex_grass_wall
+						
+						if biome_value < 0.20:
+							if chance_value < 0.1:
+								tree_node.get_child(0).get_child(0).texture = tex_tree
+								tree_node.global_position = Vector2(world_x, world_y)
+							
+						else:
+							pass
+						
+						
 					elif biome_value >= 0.25 and biome_value < 0.40:
 						ground_node.get_child(0).get_child(0).texture = tex_humus
 						ground_node.get_child(0).get_child(1).texture = tex_humus_wall
@@ -147,11 +166,18 @@ func gridRefresh() -> void:
 						ground_node.get_child(0).get_child(0).texture = tex_grass
 						ground_node.get_child(0).get_child(1).texture = tex_grass_wall
 						
+						
 					ground_node.global_position = Vector2(world_x, world_y)
+				elif depth_value >= 0.7:
+					solid_node.get_child(0).get_child(0).texture = tex_rock
+					solid_node.get_child(0).get_child(1).texture = tex_rock_wall
+					solid_node.global_position = Vector2(world_x, world_y)
 
 				existing_tiles[tile_coord] = {
 					"ground": ground_node,
-					"water": water_node
+					"water": water_node,
+					"solid": solid_node,
+					"tree": tree_node
 				}
 	
 	var sorted_children = []
@@ -179,4 +205,8 @@ func gridRefresh() -> void:
 			tile_data.water.queue_free()
 		if tile_data.ground:
 			tile_data.ground.queue_free()
+		if tile_data.solid:
+			tile_data.solid.queue_free()
+		if tile_data.tree:
+			tile_data.tree.queue_free()
 		existing_tiles.erase(key)
